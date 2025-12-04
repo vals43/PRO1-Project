@@ -1,4 +1,3 @@
-Voici la **version entièrement traduite en anglais** des tables + colonnes, tout en gardant la même structure.
 
 ---
 
@@ -10,9 +9,10 @@ Voici la **version entièrement traduite en anglais** des tables + colonnes, tou
 -- ==========================
 CREATE TABLE Users (
     user_id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    last_name VARCHAR(100),
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    avatar_url TEXT
 );
 
 -- ==========================
@@ -106,8 +106,3 @@ INSERT INTO task (title, description, priority, completed, due_date, user_id) VA
 
 ---
 
-Si tu veux, je peux aussi te générer :
-📌 un fichier SQL téléchargeable
-📌 des **indexes**, **views**, **triggers** (ex : auto-calcul de streaks)
-
-Tu veux ajouter quoi ?
