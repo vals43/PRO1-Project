@@ -1,0 +1,25 @@
+package PRO1.server.Mapper;
+
+import PRO1.server.DTO.HabitRequest;
+import PRO1.server.DTO.HabitResponse;
+import PRO1.server.Model.Habit;
+import PRO1.server.Model.Users;
+import org.springframework.stereotype.Component;
+
+@Component
+public class HabitMapper {
+
+    public Habit toEntity(HabitRequest req, Users user) {
+        return new Habit(req.name(), req.frequency(), user);
+    }
+
+    public HabitResponse toDTO(Habit habit) {
+        return new HabitResponse(
+                habit.getHabitId(),
+                habit.getName(),
+                habit.getFrequency(),
+                habit.getCreatedAt(),
+                habit.getUser().getUser_id()
+        );
+    }
+}

@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "habit")
-public class Habits {
+public class Habit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,10 +26,10 @@ public class Habits {
     @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "user_id")
     private Users user;
 
-    public Habits() {
+    public Habit() {
     }
 
-    public Habits(String name, Frequency frequency, Users user) {
+    public Habit(String name, Frequency frequency, Users user) {
         this.name = name;
         this.frequency = frequency;
         this.user = user;
