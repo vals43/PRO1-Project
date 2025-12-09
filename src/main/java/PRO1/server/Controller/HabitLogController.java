@@ -11,19 +11,19 @@ import java.util.List;
 @RequestMapping("/habit/log")
 public class HabitLogController {
 
-    private final HabitLogService service;
+    private final HabitLogService habitLogService;
 
-    public HabitLogController(HabitLogService service) {
-        this.service = service;
+    public HabitLogController(HabitLogService habitLogService) {
+        this.habitLogService = habitLogService;
     }
 
     @PostMapping
-    public HabitLogResponse logHabit(@RequestBody HabitLogRequest request) {
-        return service.save(request);
+    public HabitLogResponse createLog(@RequestBody HabitLogRequest request) {
+        return habitLogService.createHabitLog(request);
     }
 
     @GetMapping("/{habitId}")
     public List<HabitLogResponse> getLogs(@PathVariable Long habitId) {
-        return service.getLogs(habitId);
+        return habitLogService.getLogsByHabitId(habitId);
     }
 }

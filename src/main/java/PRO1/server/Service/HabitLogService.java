@@ -2,45 +2,52 @@ package PRO1.server.Service;
 
 import PRO1.server.DTO.HabitLogRequest;
 import PRO1.server.DTO.HabitLogResponse;
-import PRO1.server.Mapper.HabitLogMapper;
 import PRO1.server.Model.HabitLog;
 import PRO1.server.Model.Habit;
 import PRO1.server.Repository.HabitLogRepository;
 import PRO1.server.Repository.HabitsRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class HabitLogService {
 
-    private final HabitLogRepository logRepo;
-    private final HabitsRepository habitRepo;
+    private final HabitLogRepository habitLogRepository;
+    private final HabitsRepository habitRepository;
 
-    public HabitLogService(HabitLogRepository logRepo, HabitsRepository habitRepo) {
-        this.logRepo = logRepo;
-        this.habitRepo = habitRepo;
+    public HabitLogService(HabitLogRepository habitLogRepository, HabitsRepository habitRepository) {
+        this.habitLogRepository = habitLogRepository;
+        this.habitRepository = habitRepository;
     }
 
-    public HabitLogResponse save(HabitLogRequest request) {
-        Habit habit = habitRepo.findById(request.habitId())
-                .orElseThrow(() -> new IllegalArgumentException("Habit not found"));
+    public HabitLogResponse createHabitLog(HabitLogRequest request) {
+        Habit habit = habitRepository.findById(request.getHabitId())
+                .orElseThrow(() -> new RuntimeException("Habit not found"));
 
-        // éviter doublon même jour
-        HabitLog log = logRepo.findByHabitAndLoggedAt(habit, LocalDate.now())
-                .orElseGet(() -> HabitLogMapper.toEntity(request, habit));
+        HabitLog habitLog = new HabitLog(habit, request.isCompleted());
+        HabitLog saved = habitLogRepository.save(habitLog);
 
-        log.setStatus(request.status());
-        return HabitLogMapper.toDTO(logRepo.save(log));
+        return new HabitLogResponse(
+                saved.getLogId(),
+                (long) saved.getHabit().getHabitId(),
+                saved.isCompleted(),
+                saved.getLogDate()
+        );
     }
 
-    public List<HabitLogResponse> getLogs(Long habitId) {
-        Habit habit = habitRepo.findById(habitId)
-                .orElseThrow(() -> new IllegalArgumentException("Habit not found"));
-
-        return logRepo.findByHabit(habit).stream()
-                .map(HabitLogMapper::toDTO)
-                .toList();
+    public List<HabitLogResponse> getLogsByHabitId(Long habitId) {
+        return habitLogRepository.findByHabit_Id(habitId)
+                .stream()
+                .map(log -> new HabitLogResponse(
+                        log.getLogId(),
+                        (long) log.getHabit().getHabitId(),
+                        log.isCompleted(),
+                        log.getLogDate()
+                ))
+                .collect(Collectors.toList());
     }
 }

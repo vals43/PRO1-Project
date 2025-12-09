@@ -6,6 +6,9 @@ import PRO1.server.Model.Habit;
 import PRO1.server.Model.Users;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class HabitMapper {
 
@@ -19,7 +22,11 @@ public class HabitMapper {
                 habit.getName(),
                 habit.getFrequency(),
                 habit.getCreatedAt(),
-                habit.getUser().getUser_id()
+                habit.getUser().getUser_id(),
+                habit.getLogs() == null ? List.of() : habit.getLogs()
+                        .stream()
+                        .map(HabitLogMapper::toDTO)
+                        .collect(Collectors.toList())
         );
     }
 }

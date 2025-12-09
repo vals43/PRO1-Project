@@ -3,6 +3,7 @@ package PRO1.server.Model;
 import PRO1.server.Enum.Frequency;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "habit")
@@ -11,7 +12,7 @@ public class Habit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "habit_id", nullable = false, unique = true)
-    private int habitId;
+    private int id;
 
     @Column(name = "name", nullable = false, length = 150)
     private String name;
@@ -27,6 +28,9 @@ public class Habit {
     @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "user_id")
     private Users user;
 
+    @OneToMany(mappedBy = "habit", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HabitLog> logs;
+
     public Habit() {
     }
 
@@ -38,7 +42,7 @@ public class Habit {
     }
 
     public int getHabitId() {
-        return habitId;
+        return id;
     }
 
     public String getName() {
@@ -69,14 +73,19 @@ public class Habit {
         this.user = user;
     }
 
+
+    public List<HabitLog> getLogs() { return logs; }
+    public void setLogs(List<HabitLog> logs) { this.logs = logs; }
+    
     @Override
     public String toString() {
         return "Habit{" +
-                "habitId=" + habitId +
+                "habitId=" + id +
                 ", name='" + name + '\'' +
                 ", frequency='" + frequency + '\'' +
                 ", createdAt=" + createdAt +
                 ", user=" + (user != null ? user.getUser_id() : null) +
                 '}';
     }
+
 }

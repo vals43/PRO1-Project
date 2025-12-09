@@ -2,11 +2,13 @@ package PRO1.server.DTO;
 
 import PRO1.server.Enum.Frequency;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record HabitResponse(
         int habitId,
         String name,
         Frequency frequency,
         LocalDateTime createdAt,
-        int userId
+        int userId,
+        List<HabitLogResponse> logs
 ) {}
